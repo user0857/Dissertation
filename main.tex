@@ -21,6 +21,8 @@
 \usepackage{tabularx}
 \usepackage{natbib}
 \usepackage{authblk}
+\usepackage{enumitem}
+
 
 
 
@@ -61,7 +63,7 @@ Despite there are dozens of community detection algorithms already implemented t
 
 In general, there are two basic components that construct a network. A network(or a graph) G is composed by V and E, where V is the vertex(node) set containing all the vertices that belongs to the network and E is the edge(relation) set containing all the edge between vertices if two are connected. Further properties can be added to the network if the network is weighted or directed. In order to fit the goals of this dissertation, the label function L is add to the network, that is $G = \{V,E,L\}$. $L(v_i) = c_j$ indicates vertex $v_i$ belongs to community with label of $c_j$. With the definition of label stated previously, the community $C_i$ can be defined as $C_i = \{ L(v) = c_i \text{, } \forall v \in V \}$. 
 Furthermore, given a partitioned network with n communities, let $C_i$ be the community with a label of $c_i$, then 
-$\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$. The data structure of a network is beneficial for graph analysis since the researchers can solely work on the relation of vertices and edges without considering the whole space.
+$\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$. When conducting analysis on a network, forming raw data into network structure can be beneficial in data storage and has lower computation complexity in particular cases comparing to other relational structure \cite{6}.
 
 \bigskip
 
@@ -76,6 +78,29 @@ $\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$. The data structure of a network 
 \subsection{Community}
 
 In network analysis, community in a network often refers to a group of vertex that has closer relation comparing to other vertices that are not in the same group. To simplify the complexity of the context, in this dissertation, no vertex will be assigned to multiple communities, that is $\forall C_i,\ C_j \text{, } i \neq j$, $C_i \cap C_j = \phi$. Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of forming a community may vary. Furthermore, if given a weight network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. Without doubt, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil the latent structure from these networks.
+
+\section{Goodness of Partition}
+
+Intuitively, to examine if a partition is 'good' or not, researchers should measure following two properties: 
+\begin{enumerate}[label=(\alph*)]
+\item Tightness: Vertices within the same community should have strong relation.
+\item Sparsity: Communities should have weak relation mutually.
+\end{enumerate}
+
+In this section, a number of approaches will be introduced to evaluate the partition considering the properties mentioned above. Other additional properties such as betweeness, conductivity, and modularity are often take into consideration for better understanding of specific types of real-world network\cite{7,8}; some additional properties will also be explained in this section.
+
+\subsection{Performance Evaluation}
+A good partition should have high tightness intra-community-wise and strong trait of sparsity inter-community-wise. Given a undirected partitioned network, a performance function $P(G)$ is defined as
+$$P(G) = \frac{\text{edge of intra-community} + \text{non-edge of inter-community}}{\text{total potential edges}}$$
+$$=\frac{|E_{intra}| + [n*(n-1) - |E_{intra}| - |E_{inter}|]}{n*(n-1)/2}$$
+$$=2*\left[ 1 - \frac{ |E_{inter}| } { n*\left( n-1 \right) }  \right]$$
+where G is a partitioned network, $E_{intra}$ is the set of edges lie within communities, $E_{inter}$ is the set of edges connecting vertices between two different communities. After a series of simplification, it is not difficult to observe that a network has smaller set of inter-community edges can leads to higher value of $P(G)$(better performance)\cite{7}.
+
+\subsection{Mean Square Error}
+For networks that can be projected into dimensional spaces. We can apply mean square error to evaluate the partition.
+
+%% Not done yet
+
 
 \pagebreak
 \begin{thebibliography}{100}
@@ -107,6 +132,23 @@ In network analysis, community in a network often refers to a group of vertex th
     \textit{tatistical mechanics of complex networks. Reviews of Modern Physics}
     Albert, R. and Barabási, A.-L.,
     2002
+    
+\bibitem{6}
+    \textit{Comparison of Graph Databases and Relational Databases When Handling Large-Scale Social Data}
+    Chen, Yaowen,
+    2016
+    
+\bibitem{7}
+    \textit{Community detection in graphs}
+    Fortunato, S.,
+    2010
+    
+\bibitem{8}
+    \textit{Community structure in social and biological networks}
+    Girvan, M. and Newman, M.E.J.,
+    2002
+
+
 
         
 \end{thebibliography}
