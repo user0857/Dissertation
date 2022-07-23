@@ -93,13 +93,32 @@ In this section, a number of approaches will be introduced to evaluate the parti
 A good partition should have high tightness intra-community-wise and strong trait of sparsity inter-community-wise. Given a undirected partitioned network, a performance function $P(G)$ is defined as
 $$P(G) = \frac{\text{edge of intra-community} + \text{non-edge of inter-community}}{\text{total potential edges}}$$
 $$=\frac{|E_{intra}| + [n*(n-1) - |E_{intra}| - |E_{inter}|]}{n*(n-1)/2}$$
-$$=2*\left[ 1 - \frac{ |E_{inter}| } { n*\left( n-1 \right) }  \right]$$
-where G is a partitioned network, $E_{intra}$ is the set of edges lie within communities, $E_{inter}$ is the set of edges connecting vertices between two different communities. After a series of simplification, it is not difficult to observe that a network has smaller set of inter-community edges can leads to higher value of $P(G)$(better performance)\cite{7}.
+$$=2*\left[ 1 - \frac{ |E_{inter}| } { n*\left( n-1 \right) }  \right],$$
+where G is a partitioned network, $E_{intra}$ is the set of edges lie within communities, $E_{inter}$ is the set of edges connecting vertices between two different communities. After a series of simplification, it is not difficult to observe that a network has smaller set of inter-community edges can leads to higher value of $P(G)$(better performance)\cite{7}. In the aspect of algorithm complexity analysis, the time complexity of performance evaluation is in $O(E)$, where E is the edge set; with linear time complexity, researchers can conduct faster initial evaluation comparing to other advanced evaluation procedures.
 
 \subsection{Mean Square Error}
-For networks that can be projected into dimensional spaces. We can apply mean square error to evaluate the partition.
+For networks with coordinates provided, take geographical network or cosmic network for instance \cite{9,10}, computing the mean square error(MSE) evaluation can give us an idea if a partition is good. A demonstration of geographical network is shown in figure \ref{fig:fig_2}. The quality function of MSE evaluation is defined as follows:
+    $$Q(G) = \sum_{i}^{k}\sum_{j}^{n} M_{i j} * |v_{j} - \bar{v}_{i}|^{2},$$
+where G is a partitioned network, k is the total number of communities in a partition, n is the count of the vertices of network $G$, $M$ is a k by n communities matrix, \[
+  M_{ij} = 
+  \begin{cases}
+    1, &  v_{j} \in C_i\\
+    0, & \text{otherwise}
+  \end{cases}
+\]
+, and $\bar{v}_{i}$ is the arithmetic center of $C_i$. 
 
-%% Not done yet
+\bigbreak
+
+This evaluation is relatively straightforward; if given a well-partitioned network, it is expected vertices within the same community cluster densely and surrounds the center of the community; such behavior results in mean square error within every community approaches to zero. The computation complexity of MSE evaluation is in $O(C*V)$, the computing time can be reduced by pre-allocating vertices into a collection of set distributed by the partition.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{fig_2.png}
+\caption{\label{fig:fig_2}A airline trace network of the United States of America representing in geographical network\cite{11}.}
+\end{figure}
+
+\subsection{Centrality}
 
 
 \pagebreak
@@ -147,6 +166,21 @@ For networks that can be projected into dimensional spaces. We can apply mean sq
     \textit{Community structure in social and biological networks}
     Girvan, M. and Newman, M.E.J.,
     2002
+    
+\bibitem{9}
+    \textit{Network analysis of the COSMOS galaxy field}
+    de Regt, R., Apunevych, S., von Ferber, C., Holovatch, Y. and Novosyadlyj, B,
+    2018
+    
+\bibitem{10}
+    \textit{Evaluation of Community Detection Methods}
+    Liu, X., Cheng, H.-M. and Zhang, Z.-Y,
+    2019
+    
+\bibitem{11}
+    \textit{An Introduction of Gephi}
+    2017
+
 
 
 
