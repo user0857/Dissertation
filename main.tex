@@ -22,6 +22,11 @@
 \usepackage{natbib}
 \usepackage{authblk}
 \usepackage{enumitem}
+\usepackage{setspace}
+
+\renewcommand{\baselinestretch}{1.25} 
+
+
 
 
 
@@ -32,7 +37,6 @@
 \date{{September}{2022}}
 
 \begin{document}
-
 \maketitle
 \pagebreak
 
@@ -115,11 +119,30 @@ This evaluation is relatively straightforward; if given a well-partitioned netwo
 \begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{fig_2.png}
-\caption{\label{fig:fig_2}A airline trace network of the United States of America representing in geographical network\cite{11}.}
+
+\caption{\label{fig:fig_2}An airline flight network of the United States of America\cite{11}.}
 \end{figure}
 
-\subsection{Centrality}
+\subsection{Modularity}
 
+This evaluation method is first introduced by Blondel in 2008 \cite{12}. When tackling with a humongous and complex network, a fast and approximated evaluation algorithm is necessary for time and resource efficiency. In this end, the modularity evaluation stands out to do this job. The modularity function is defined as follows:
+$$ Q = \frac{1}{2m} \sum_{i,j} \left[ A_{i j} - \frac{k_{i}k_{j}}{2m}\right] \delta(c_i, c_j),$$
+where $m$ is the count of edges, $A$ is the adjacency matrix of network G, $k_i$ is the degree of vertex i if network is both undirected and unweighted, and $\delta$-function takes two labels, $c_i \text{ and } c_j$ as input, returns 1 if $c_i = c_j$ and 0 otherwise.
+
+\bigbreak
+
+Given an undirected and unweighted network, the value of modularity lies in range $[-0.5, 1]$. If the edges within communities exceed the expected count of edges, the $Q$ value is then positive; this implies that the edges inside communities are averagely concentrated. As author stated in the original paper \cite{12}, implementing modularity to examine the partition is not the only usage. The modularity function is as well suitable for partition optimization for large networks. The community detection algorithms that import modularity optimization, such as Louvain method, will be discussed in the latter section.
+
+\bigbreak
+
+Despite the time complexity of computing modularity is in $O(n*log n)$, which is faster comparing to other meta partition evaluations \cite{2, 12}, the modularity evaluation is not capable of detecting small communities. In fact, the evaluation may suggest small communities should be merged into a greater community, causing false estimation of structure and count of communities. Such over-merging behavior is called resolution limit \cite{13}.
+
+%% Read more about modularity and it's concept
+%% Read resolution limit (over-merging)
+
+\subsection{Normalized Mutual Information}
+
+%% Read page 3 "Evaluation of Community Detection Methods"
 
 \pagebreak
 \begin{thebibliography}{100}
@@ -181,6 +204,15 @@ This evaluation is relatively straightforward; if given a well-partitioned netwo
     \textit{An Introduction of Gephi}
     2017
 
+\bibitem{12}
+    \textit{Fast unfolding of communities in large networks}
+    Blondel, V.D., Guillaume, J.-L., Lambiotte, R. and Lefebvre, E
+    2008
+    
+\bibitem{13}
+    \textit{Resolution limit in community detection}
+    Fortunato, S. and Barthelemy, M.,
+    2006
 
 
 
