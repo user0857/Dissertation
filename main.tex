@@ -61,12 +61,11 @@ Singed: ***My Signature Here***
 When researchers conducting analysis on their topics, while processing data, the format of data can be form in various fashion. Table is perhaps one of the most commonly used format for data storage. However, it can be arduous for researchers to observe the relation between rows(or columns) if the data is in large scale. To ease the pain, network structure is an excellent data format that is popular among the researchers if they would like to focus on analysing data structure-wise. For analysis that is related to network structure such as study how the network change over time, visualizing the complex network, and the topic that is related to this dissertation, detecting communities within network, are called network analysis. In recent decades, the study related to network analysis has drawn the attention of scholars form various fields. Among numerous topics of network analysis, discovering the community structure of network is one of the most essential approach to learn the complicated systems that can not easily be cracked by solely conducting shallow researches\cite{1}. 
 
 %% Add motivation/ The brief intro of the dissertation.
-\bigskip
+\bigbreak
 
 Despite there are dozens of community detection algorithms already implemented to real-world network analysis and have already granted great success in many fields \cite{2,3}, the sample networks for performance testing are often simplified and sparse. In this dissertation, the LFR benchmark graph is introduced to mock the real-world network by increasing the complexity of the network. Afterwards, a subset of community detection algorithms are applied to the artificial network. Due to the nature of algorithms, the dissertation will introduce the computation complexity and their procedures. Also, since some algorithms are iterative, the dissertation selects the best result from iterations for evaluations under different circumstances. Next, the dissertation provides a series of approaches to evaluate the partitions of algorithms. As mentioned, a network can have either high complexity or very sparse structure, there is no consistent classification yet to determine if a given partition of a network is 'good'. The dissertation particularly underline the methodology on goodness of partition and the measure of similarity between the partition of a community detection algorithm and the ground truth community partition(network that is already labeled by communities).
 
 \section{Background}
-%% In this section, the dissertation provides background information about the definition of network. Note that there is no fixed format of how to construct a network so far, therefore the notation used in this dissertation can be different from other papers.
 
 \subsection{Network Structure}
 
@@ -80,7 +79,7 @@ In general, there are two components that construct a network. A network(or a gr
 
 When conducting analysis on a network, forming raw data into network structure can be beneficial in data storage and has lower computation complexity in particular cases comparing to other relational structure \cite{6}. In the field of database management system, there are three practical approaches to store network structure data. For the sake for clarity, assume we have a small undirected and unweighted network containing four vertices, namely 1, 2, 3, and 4, and four edges, 1 connects to 2, 1 connect to 3, 2 connects to 3, and 3 connects to 4. Mathematically, $G = \{V, E\} \text{,where }V=\{1,2,3,4\}\text{ and }E=\{(1,2),(1,3),(2,3),(3,4)\}$. The visualization of the graph is shown in figure \ref{fig:fig_1} .
 
-%% Finish the graphical data structure
+%% (Done)Finish the graphical data structure
 \begin{enumerate}[label=(\roman*)]
 \item Edge Set: The first data structure is similar to the definition of network. In most cases, for network structures that are stored in this fashion has two element, a vertex set and a set of tuple of edges. For example, if the network that is previously defined is in the form of edge set, then $G = \{ V=\{1,2,3,4\}, E=\{(1,2),(1,3),(2,3),(3,4)\}\}$. It is obvious that the data structure has no conspicuous different to the definition of the original network. One advantage of storing network data in edge set is fast computation in researches that are related to vertices. Since we save vertices as a set, it takes only constant time to determine vertex existence and takes $O(V')$ when trying to unfold the nature of a subset of the vertex set of the network, where $V'$ is expressed as an arbitrary subset of the vertex set $V$. In real-world application, say, if researchers solely cares about the properties of subset of vertices, such as finding if certain substance of chemical compounds exist in the protein network or search engine built for employee detail look up, the edge set data structure performs well in terms of lower computation complexity and better data storage efficiency.
 \item Adjacency Matrix: The second abstract data structure is identical to adjacency matrix in graph theory.  Assume given a unweighted network $G$, the adjacency matrix $A$ is a $n \times n$ square matrix, where $n$ is the count of total vertices in the network. For any $a_{ij}$ in matrix $A$, $a_{ij}=1$ if vertex $v_i$ connects to vertex $v_j$, where $v_i, v_j \in V(G)$; $a_{ij}=0$ otherwise. For instance, if the demonstrative network $G$ is implemented with this abstract data type, the adjacency matrix $A$ would be:
@@ -95,12 +94,38 @@ It is obvious to observe that the demonstrative adjacency matrix $A$ is symmetri
 
 \bigbreak
 
-The pros of storing network in adjacency matrix is fast checking and re-weighting mechanics. The edge or vertex searching takes $O(1)$ time to complete the task. As for re-weighting mechanics such as updating the value of element within the adjacency matrix or connecting edges between vertices that are already in the network, the time complexity is also in $O(1)$. However, due to the nature of adjacency matrix, this array-like storage technique can not be adaptive comparing to other methods. For instance, if a new vertex is added to the adjacency matrix, let $n$ be the cardinality of $V(G)$, it takes $O(n)$ time and possibly consume $O(n^2)$ spaces if all elements within the updated adjacency matrix needs to be re-allocated. Another huge disadvantage is the adjacency takes a tremendous amount of spaces if the network is large; additionally, if the network is sparse, meaning that the count of vertices is far more than the count of edges, the adjacency matrix may contain a lot of zeros, causing database storing a great portion of information. Last but not the least, despite adjacency matrix performs well in searching edges and vertices, the time complexity of advanced algorithm like path finding algorithms or topological algorithms can take up to $O(n^2)$, where $n$ is the cardinality of $V(G)$, which can be reduced to lower complexity if other abstract data structure is applied\cite{16}.
-\item Map: 
+The pros of storing network in adjacency matrix is fast checking and rapid re-weighting mechanics. The edge or vertex searching takes $O(1)$ time to complete the task. As for re-weighting mechanics such as updating the value of element within the adjacency matrix or connecting edges between vertices that are already in the network, the time complexity is also in $O(1)$. However, due to the nature of adjacency matrix, this array-like storage technique can not be adaptive comparing to other methods. For instance, if a new vertex is added to the adjacency matrix, let $n$ be the cardinality of $V(G)$, it takes $O(n^2)$ time in the worst scenario and possibly consume $O(n^2)$ spaces if all elements within the updated adjacency matrix needs to be re-allocated. Another huge disadvantage is the adjacency takes a tremendous amount of spaces if the network is large; additionally, if the network is sparse, meaning that the count of vertices is far more than the count of edges, the adjacency matrix may contain a lot of zeros, causing database storing a great portion of unavailing information. Last but not the least, despite adjacency matrix performs well in searching edges and vertices, the time complexity of advanced algorithm like path finding algorithms or topological algorithms can take up to $O(n^2)$, where $n$ is the cardinality of $V(G)$, which can be reduced to lower complexity if other abstract data structure is applied\cite{16}.
+
+\item Adjacency List: So far, the dissertation discusses two abstract graphical data structures. However, due to the lack of adaptiveness of the previous data structures, researchers may encounters redundant time consumption or data storage limit when conducting certain algorithms based on them. The adjacency list takes the advantage of edge set and adjacency matrix and avoid the downsides. The adjacency list of a network is a collection of pairs, where pair is composed of a vertex and a list of vertices connected by the vertex. 
+
+
+\begin{table}
+    \begin{center}
+        \begin{tabular}{ |c|c| } 
+            \hline
+            Vertex & List of Adjacent Vertices\\ 
+            \hline\hline
+            1 & [2,3] \\ 
+            \hline
+            2 & [1,3] \\ 
+            \hline
+            3 & [1,2,4]\\
+            \hline
+            4 & [3] \\
+            \hline
+        \end{tabular}
+        \caption{\label{tab:adj_list} Network shown in Figure \ref{fig:fig_1} stored in adjacency list fashion.}
+    \end{center}
+\end{table}
+
+Table \ref{tab:adj_list} shows that each vertex in demonstrative network is followed by its own adjacency list. For instance, for vertex 3, by observing its adjacency list, one can tell that vertex 3 connects to vertex 1, vertex 2, and vertex 4. The only difference between adjacency list and adjacency matrix is:  Select a vertex, adjacency list considers only vertices which the vertex connects to, while adjacency matrix store all the information whether all other vertex(including the selected vertex) is connected by the vertex or not. By doing so, adjacency list solve the potential great usage of memory spaces yet still maintain fast performance in edge checking and vertex searching. With the help of innovation of storage technology in recent years, researchers have found faster ways to retrieve useful information. Further advanced graphical abstract data structure to optimized certain properties of network can be found in the journal written by Harmanjit Singh \cite{16}.
+
 \end{enumerate}
 
+By now, the dissertation introduces elements that composite a network and their properties and three most popular methods to store a network. To guide readers to the topic of this dissertation, the properties of community will be discussed in the next subsection.
 
-\bigskip
+
+\bigbreak
 \begin{figure}
     \centering
     \begin{minipage}{0.45\textwidth}
@@ -118,7 +143,40 @@ The pros of storing network in adjacency matrix is fast checking and re-weightin
 
 \subsection{Community}
 
-In network analysis, community in a network often refers to a group of vertex that has closer relation comparing to other vertices that are not in the same group. In order to fit the goals of this dissertation, the label function L is add to the network, that is $G = \{V,E,L\}$. $L(v_i) = c_j$ indicates vertex $v_i$ belongs to community with label of $c_j$. With the definition of label stated previously, the community $C_i$ can be defined as $C_i = \{ L(v) = c_i \text{, } \forall v \in V \}$. Furthermore, given a partitioned network with n communities, let $C_i$ be the community with a label of $c_i$, then $\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$.  To simplify the complexity of the context, in this dissertation, no vertex will be assigned to multiple communities, that is $\forall C_i,\ C_j \text{, } i \neq j$, $C_i \cap C_j = \phi$. Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of forming a community may vary. Furthermore, if given a weight network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. Without doubt, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil the latent structure from these networks.
+%% Re-write the remaining part of community section.
+%% Complete Strong/weak community definition
+%% Complete global structure community
+
+In network analysis, community in a network often refers to a group of vertex that has closer relation among each other comparing to other vertices that are not in the same group. For instance, take geographic network for instance with no additional information given, intuitively, let houses be vertices and distance between houses be edges, one may consider vertices that 'cluster' together is more likely to be a community. Of course, there is nothing wrong to determine the formation of community in this way. In fact, if one connect the houses based on the name of the owner, the shape and the scale of the community in the geographic network can be immensely different. Therefore, based on the nature of the network and the properties that researchers are interested in, there is no fix definition of community within network. 
+
+\bigbreak
+
+In the research \cite{19}, Fortunatoa proposed that a module (community) should contains more edges joining vertices within the same module (intra-community edges) than sum of edges joining vertices across different modules (inter-community edges). The idea is intuitive, the higher density of edges within a sub-graph is more likely to form into a community. Note that as previously mentioned, since network structures analysis can be conducted in various fields; many definitions of community have been characterize by statisticians, physicians, and chemical scientists. In general, community of network can be defined in two ways: One based on the local structure and the other is based on the global structure.
+
+\bigbreak 
+
+\begin{enumerate}[label=(\roman*)]
+\item Definition of Local Structure: By reading the title, it is not hard to tell that, given a sub-graph of the network that is under examination, the attention is focused on the local structure(sub-graph in this case). Indeed, such definition neglect the influence of the remaining portion other than the sub-graph itself. The local structure definition is mostly used in social network analysis \cite{17} and geographical network analysis \cite{18} since the mutual cohesion within community is often the focus of the studies. The basic evaluation of community is $d_i$, the total degree of the vertex $i$ in network $G$. Degree is the count of edges that connect the vertex to its neighbor vertices. Assume that the network is unweighted and undirected, in terms of adjacency matrix introduced in section 2.1, let $A$ be the adjacency matrix of network $G$, then $d_i = \sum_{j} A_{ij}$. The same expression can be expanded to sub-graph of network. Given a sub-graph, say, $G'$, then 
+
+\begin{equation}\label{eq:com_deg}
+d_i(G') = \sum_{j \in V(G)} A_{ij} = \sum_{(j\in G')} A_{ij} + \sum_{(\notin G')} A_{ij} = d_i^{in}(G') + d_i^{out}(G').
+\end{equation}
+
+$d_i^{in}(G')$ is the sum of edges that connect vertex $i$ and all other vertices that are within sub-graph $G'$. $d_i^{out}(G')$ is the sum of edges that connect vertex i and all other vertices lies 'outside' of the sub-graph $G'$. 
+ 
+\bigbreak
+ 
+By splitting \eqref{eq:com_deg} into two components in this fashion, researchers can determine if a sub-graph is indeed a community. Moreover, if a community is successfully identified, the following two definition can indicate if such community is 'strong' or 'weak'.
+
+\begin{enumerate}
+    \item Strong Community
+    \item Weak Community
+\end{enumerate}
+ 
+\item Definition of Global Structure:
+\end{enumerate}
+
+In order to fit the goals of this dissertation, the label function L is add to the network, that is $G = \{V,E,L\}$. $L(v_i) = c_j$ indicates vertex $v_i$ belongs to community with label of $c_j$. With the definition of label stated previously, the community $C_i$ can be defined as $C_i = \{ L(v) = c_i \text{, } \forall v \in V \}$. Furthermore, given a partitioned network with n communities, let $C_i$ be the community with a label of $c_i$, then $\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$.  To simplify the complexity of the context, in this dissertation, no vertex will be assigned to multiple communities, that is $\forall C_i,\ C_j \text{, } i \neq j$, $C_i \cap C_j = \phi$. Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of forming a community may vary. Furthermore, if given a weight network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. Without doubt, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil the latent structure from these networks.
 
 \section{Goodness of Partition}
 
@@ -126,7 +184,7 @@ Intuitively, to examine if a partition is 'good' or not, researchers should meas
 \begin{enumerate}[label=(\alph*)]
 \item Tightness: Vertices within the same community should have strong relation.
 \item Sparsity: Communities should have weak relation mutually.
-\end{enumerate}[label=(\alph*)]
+\end{enumerate}
 
 In this section, a number of approaches will be introduced to evaluate the partition considering the properties mentioned above. Other additional properties such as betweeness, conductivity, and modularity are often take into consideration for better understanding of specific types of real-world network\cite{7,8}; some additional properties will also be explained in this section.
 
@@ -272,9 +330,23 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
     
     \bibitem{16}
     {Role of Adjacency Matrix & Adjacency List in Graph Theory}
-    Harmanjit S., Richa S.
+    Harmanjit S., Richa S.,
     2012
         
+    \bibitem{17}
+    {Models and Methods in Social Network Analysis}
+    Carrington, P.J., Scott, J. and Wasserman, S.,
+    2005
+    
+    \bibitem{18}
+    {Geographical Network Analysis}
+    Uitermark, J. and Meeteren, M.,
+    2021
+    
+    \bibitem{19}
+    {Community Structure in Graphs}
+    Santo Fortunatoa, Claudio Castellanob,
+    2007
 \end{thebibliography}
 
 \end{document}
