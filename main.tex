@@ -166,13 +166,30 @@ $d_i^{in}(G')$ is the sum of edges that connect vertex $i$ and all other vertice
  
 \bigbreak
  
-By splitting \eqref{eq:com_deg} into two components in this fashion, researchers can determine if a sub-graph is indeed a community. Moreover, if a community is successfully identified, the following two definition can indicate if such community is 'strong' or 'weak'.
+By splitting equation\eqref{eq:com_deg} into two components in this fashion, researchers can determine if a sub-graph is indeed a community. Moreover, if a community is successfully identified, the following two definition can indicate if such community is 'strong' or 'weak'.
 
 \begin{enumerate}
-    \item Strong Community
-    \item Weak Community
+    \item Strong Community: Given a sub-graph $G'$, $G'$ is a strong community if
+    \begin{equation}\label{eq:strong_com}
+    d_i^{in}(G') > d_i^{out}(G'), \forall i \in G'
+    \end{equation}
+    The strictness of definition of strong community ensures that every nodes within communities has higher intra-community edges than edges connecting the rest of the graph.
+    \item Weak Community: Given a sub-graph $G'$, $G'$ is a weak community if
+    \begin{equation}\label{eq:weak_com}
+    \sum_{i \in G'}d_i^{in}(G') > \sum_{i \in G'}d_i^{out}(G')
+    \end{equation}
+    By comparing two definitions, it is obvious that weak community only requires the total number of intra-community edges being greater than the total number of inter-community edges.
 \end{enumerate}
- 
+
+Clearly, a strong community can be as well a weak community, but the relation is not mutual, meaning that a weak community may not be a strong community by default. 
+
+For sure, there are additional definitions of community based on varies needs. For instance, k-core is another approach to identify a community that has high similarity to the definition of strong community. A k-core evaluation is that given a sub-graph $G'$, every vertex in $G'$ must have at least k neighbors that are in sub-graph $G'$. Formally, given a subgraph $G'$, $G'$ is a k-core community if 
+
+\begin{equation}\label{eq:k_core}
+d_i^{in}(G') > k, \forall i \in G', k \in N,
+\end{equation}
+where $N$ is the set of natural numbers. Further application of k-core technique can be found in reference \cite{20}.
+
 \item Definition of Global Structure:
 \end{enumerate}
 
@@ -347,6 +364,11 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
     {Community Structure in Graphs}
     Santo Fortunatoa, Claudio Castellanob,
     2007
+    
+    \bibitem{20}
+    {s-core network decomposition: A generalization of k-core analysis to weighted networks}
+    Eidsaa, M. and Almaas, E.,
+    2013
 \end{thebibliography}
 
 \end{document}
