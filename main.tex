@@ -67,9 +67,11 @@ Despite there are dozens of community detection algorithms already implemented t
 
 \section{Background}
 
+In this section, the dissertation introduces the background knowledge of network and community. In subsection 2.1, introduction to network structure, the basic terms used in both network analysis is firstly introduced. Secondly, in order to better understand the impact of data structures on community detection algorithms with respect to computational complexity, three of the most commonly used abstract data type for network data storage is also explained with examples. The next subsection, community, establishes the basic representation of community structure initially; afterwards, types of community are address accordingly.
+
 \subsection{Network Structure}
 
-The two smallest elements in network structure are vertex and edge, denoted as $v$ and $e$. Vertex is simply a node within the network, and a vertex(or a node) can contain multiple information. For instance, in social network study, each vertex represents a user, and therefore may contain some information such as phone number, physical address, searching preference, and so on.  Therefore, vertex can be treated as atom within a particle, even though vertex can take a collection of information, yet is not divisible, meaning can not be broken into smaller vertices by default. The other element is edge, an edge represent the connection between two vertices within the same network. The definition of edge is as follows:  There is an edge between vertex $v_i$ and vertex $v_j$, where $v_i$ and $v_j$ both belong to network(or a graph) $G$, if there exists an connection(or relation) between $v_i$ and $v_j$. One thing worth noticing is that an edge can be directed or weighted. For networks that contains weighted edges, the network is called weighted network; similarly, for networks that contains undirected edges, the network is called directed network. A great example of directed and weighted network is the United States Interstate Highway System(USIHS) \cite{14}, each in USIHS is usually a capital of a state or a flourish city, and the edges between these towns are highways with precise length in kilometers. Beside these popular types of network, there are also other networks with interesting properties; however, to focus on the purpose of this dissertation, further study can be done by reading the book, Introduction to Graph Theory Fourth edition \cite{15}.
+The two smallest elements in network structure are vertex and edge, denoted as $v$ and $e$. Vertex is simply a node within the network, and a vertex(or a node) can contain multiple information. For instance, in social network study, each vertex represents a user, and therefore may contain some information such as phone number, physical address, searching preference, and so on.  Therefore, vertex can be treated as atom within a particle, even though vertex can take a collection of information, yet is not divisible, meaning can not be broken into smaller vertices by default. The other element is edge, an edge represent the connection between two vertices within the same network. The definition of edge is as follows:  There is an edge between vertex $v_i$ and vertex $v_j$, where $v_i$ and $v_j$ both belong to network(or a graph) $G$, if there exists an connection(or relation) between $v_i$ and $v_j$. One thing worth noticing is that an edge can be directed or weighted. For networks that contains weighted edges, the network is called weighted network; similarly, for networks that contains undirected edges, the network is called directed network. A great example of directed and weighted network is the United States Interstate Highway System(USIHS) \cite{14}, each in USIHS is usually a capital of a state or a flourish city, and the edges between these towns are highways with precise length in kilometers. Beside these popular types of network, there are also other networks with interesting properties; however, to focus on the purpose of this dissertation, further study can be found in the book, Introduction to Graph Theory Fourth edition \cite{15}.
 
 \bigbreak
 
@@ -151,49 +153,57 @@ In network analysis, community in a network often refers to a group of vertex th
 
 \bigbreak
 
+In general, to express a vertex $v$ is assigned to a community $C_i$, it can be written as $v \in C_i$. Alternatively, in the same scenario, $v$ has a label of $c_i$ and $C_i$ is a collection of vertices that all has a label, $c_i$. Given a partitioned network with n communities, let $C_i$ be the community formed by vertices with a label of $c_i$, if every vertex is assigned to at least one of the community then $\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$.  Without questioning, a vertex can be partitioned into multiple communities, causing overlapped community. Such phenomena is common in real life networks\cite{2,4,6}. To simplify the complexity of the context, in this dissertation, no vertex will be assigned to multiple communities, that is $\forall C_i,\ C_j \text{, } i \neq j\text{, }C_i \cap C_j = \phi$. 
+
+\bigbreak
+
 In the research \cite{19}, Fortunatoa proposed that a module (community) should contains more edges joining vertices within the same module (intra-community edges) than sum of edges joining vertices across different modules (inter-community edges). The idea is intuitive, the higher density of edges within a sub-graph is more likely to form into a community. Note that as previously mentioned, since network structures analysis can be conducted in various fields; many definitions of community have been characterize by statisticians, physicians, and chemical scientists. In general, community of network can be defined in two ways: One based on the local structure and the other is based on the global structure.
 
 \bigbreak 
 
 \begin{enumerate}[label=(\roman*)]
-\item Definition of Local Structure: By reading the title, it is not hard to tell that, given a sub-graph of the network that is under examination, the attention is focused on the local structure(sub-graph in this case). Indeed, such definition neglect the influence of the remaining portion other than the sub-graph itself. The local structure definition is mostly used in social network analysis \cite{17} and geographical network analysis \cite{18} since the mutual cohesion within community is often the focus of the studies. The basic evaluation of community is $d_i$, the total degree of the vertex $i$ in network $G$. Degree is the count of edges that connect the vertex to its neighbor vertices. Assume that the network is unweighted and undirected, in terms of adjacency matrix introduced in section 2.1, let $A$ be the adjacency matrix of network $G$, then $d_i = \sum_{j} A_{ij}$. The same expression can be expanded to sub-graph of network. Given a sub-graph, say, $G'$, then 
-
-\begin{equation}\label{eq:com_deg}
-d_i(G') = \sum_{j \in V(G)} A_{ij} = \sum_{(j\in G')} A_{ij} + \sum_{(\notin G')} A_{ij} = d_i^{in}(G') + d_i^{out}(G').
-\end{equation}
-
-$d_i^{in}(G')$ is the sum of edges that connect vertex $i$ and all other vertices that are within sub-graph $G'$. $d_i^{out}(G')$ is the sum of edges that connect vertex i and all other vertices lies 'outside' of the sub-graph $G'$. 
- 
-\bigbreak
- 
-By splitting equation\eqref{eq:com_deg} into two components in this fashion, researchers can determine if a sub-graph is indeed a community. Moreover, if a community is successfully identified, the following two definition can indicate if such community is 'strong' or 'weak'.
-
-\begin{enumerate}
-    \item Strong Community: Given a sub-graph $G'$, $G'$ is a strong community if
-    \begin{equation}\label{eq:strong_com}
-    d_i^{in}(G') > d_i^{out}(G'), \forall i \in G'
+\item
+    Definition of Local Structure: By reading the name, it is not hard to tell that, given a sub-graph of the network that is under examination, the attention is focused on the local structure(sub-graph in this case). Indeed, such definition neglect the influence of the remaining portion other than the sub-graph itself. The local structure definition is mostly used in social network analysis \cite{17} and geographical network analysis \cite{18} since the mutual cohesion within community is often the focus of the studies. The basic evaluation of community is $d_i$, the total degree of the vertex $i$ in network $G$. Degree is the count of edges that connect the vertex to its neighbor vertices. Assume that the network is unweighted and undirected, in terms of adjacency matrix introduced in section 2.1, let $A$ be the adjacency matrix of network $G$, then $d_i = \sum_{j} A_{ij}$. The same expression can be expanded to sub-graph of network. Given a sub-graph, say, $G'$, then 
+    
+    \begin{equation}\label{eq:com_deg}
+    d_i(G') = \sum_{j \in V(G)} A_{ij} = \sum_{(j\in G')} A_{ij} + \sum_{(\notin G')} A_{ij} = d_i^{in}(G') + d_i^{out}(G').
     \end{equation}
-    The strictness of definition of strong community ensures that every nodes within communities has higher intra-community edges than edges connecting the rest of the graph.
-    \item Weak Community: Given a sub-graph $G'$, $G'$ is a weak community if
-    \begin{equation}\label{eq:weak_com}
-    \sum_{i \in G'}d_i^{in}(G') > \sum_{i \in G'}d_i^{out}(G')
+    
+    $d_i^{in}(G')$ is the sum of edges that connect vertex $i$ and all other vertices that are within sub-graph $G'$. $d_i^{out}(G')$ is the sum of edges that connect vertex i and all other vertices lies 'outside' of the sub-graph $G'$. 
+     
+    \bigbreak
+     
+    By splitting equation\eqref{eq:com_deg} into two components in this fashion, researchers can determine if a sub-graph is indeed a community. Moreover, if a community is successfully identified, the following two definition can indicate if such community is 'strong' or 'weak'.
+    
+    \begin{enumerate}
+        \item Strong Community: Given a sub-graph $G'$, $G'$ is a strong community if
+        \begin{equation}\label{eq:strong_com}
+        d_i^{in}(G') > d_i^{out}(G'), \forall i \in G'
+        \end{equation}
+        The strictness of definition of strong community ensures that every nodes within communities has higher intra-community edges than edges connecting the rest of the graph.
+        \item Weak Community: Given a sub-graph $G'$, $G'$ is a weak community if
+        \begin{equation}\label{eq:weak_com}
+        \sum_{i \in G'}d_i^{in}(G') > \sum_{i \in G'}d_i^{out}(G')
+        \end{equation}
+        By comparing two definitions, it is obvious that weak community only requires the total number of intra-community edges being greater than the total number of inter-community edges.
+    \end{enumerate}
+    
+    Clearly, a strong community can be as well a weak community, but the relation is not mutual, meaning that a weak community may not be a strong community by default. 
+    
+    For sure, there are additional definitions of community based on varies needs. For instance, k-core is another approach to identify a community that has high similarity to the definition of strong community. A k-core evaluation is that given a sub-graph $G'$, every vertex in $G'$ must have at least k neighbors that are in sub-graph $G'$. Formally, given a subgraph $G'$, $G'$ is a k-core community if 
+    
+    \begin{equation}\label{eq:k_core}
+    d_i^{in}(G') > k, \forall i \in G', k \in N,
     \end{equation}
-    By comparing two definitions, it is obvious that weak community only requires the total number of intra-community edges being greater than the total number of inter-community edges.
+    where $N$ is the set of natural numbers. Further application of k-core technique can be found in reference \cite{20}.
+
+\item
+    Definition of Global Structure: Communities, or so called modules, are basically a fraction of a graph after all. Therefore, it is reasonable to consider the formation of communities in a greater scope. One of the most used method is by comparing network with its null model. The idea of null model is first proposed by Girvan and Newman in reference \cite{8}. A null model of a network shares the same vertex set with the original network, that is to say, the vertex set of null model is equivalent to the set of network. However, as for the edge set of null model, edges within null model are 'rewired' randomly; the rewiring process can be achieved by applying Maslov-Sneppen rewiring algorithm\cite{22}. Since edges of null model do not follow properties that may hold in the original network yet follows the randomness of some distribution, null model does not, or at least as no intention to, reveal traits of community structure in general cases. [It is worth mentioning that due to the nature of current randomness generating algorithms, computers nowadays are not capable of producing true random distributions for constructing null models, further study can be found in \cite{21, 22}.] By implementing null model to compare with the structure, the result of comparison can illustrate the existence of communities and exhibit their size and their characteristics.
+
 \end{enumerate}
 
-Clearly, a strong community can be as well a weak community, but the relation is not mutual, meaning that a weak community may not be a strong community by default. 
 
-For sure, there are additional definitions of community based on varies needs. For instance, k-core is another approach to identify a community that has high similarity to the definition of strong community. A k-core evaluation is that given a sub-graph $G'$, every vertex in $G'$ must have at least k neighbors that are in sub-graph $G'$. Formally, given a subgraph $G'$, $G'$ is a k-core community if 
-
-\begin{equation}\label{eq:k_core}
-d_i^{in}(G') > k, \forall i \in G', k \in N,
-\end{equation}
-where $N$ is the set of natural numbers. Further application of k-core technique can be found in reference \cite{20}.
-
-\item Definition of Global Structure:
-\end{enumerate}
-
-In order to fit the goals of this dissertation, the label function L is add to the network, that is $G = \{V,E,L\}$. $L(v_i) = c_j$ indicates vertex $v_i$ belongs to community with label of $c_j$. With the definition of label stated previously, the community $C_i$ can be defined as $C_i = \{ L(v) = c_i \text{, } \forall v \in V \}$. Furthermore, given a partitioned network with n communities, let $C_i$ be the community with a label of $c_i$, then $\bigcup_{1 \leq i \leq n} C_i \subseteq V(G)$.  To simplify the complexity of the context, in this dissertation, no vertex will be assigned to multiple communities, that is $\forall C_i,\ C_j \text{, } i \neq j$, $C_i \cap C_j = \phi$. Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of forming a community may vary. Furthermore, if given a weight network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. Without doubt, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil the latent structure from these networks.
+Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of a community may vary. In fact, in numerous community detection algorithms, definitions of community are often byproducts of the algorithms to evaluate if the current partition requires further optimization \cite{19}. Additionally, if given a weighted network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. As mentioned previously, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil latent structure from these random graphs yet the interpretation of such results can be impractical.
 
 \section{Goodness of Partition}
 
@@ -260,6 +270,7 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
 
 \subsection{Normalized Mutual Information}
 
+%% Read Community Structure - Section 6
 %% Work on NMI chapter intro
 %% In Evaluation of Community Detection Methods, NMI is counter-intuitive and unreasonable due to lack of consideration of local community strucure
 %% Introduce new NMI indicator: adding the summation of v_partition/v_true as coefficients into orginal NMI model(Treat all communities equally to reduce size discrepancy)
@@ -369,6 +380,17 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
     {s-core network decomposition: A generalization of k-core analysis to weighted networks}
     Eidsaa, M. and Almaas, E.,
     2013
+    
+    \bibitem{21}
+    {MIT School of Engineering |» Can a computer generate a truly random number? [online] Mit Engineering}
+    Rubin, J.,
+    2011
+    
+    \bibitem{22}
+    {Null Models of Economic Networks: The Case of the World Trade Web}
+    Giorgio Fagiolo · Tiziano Squartini · Diego Garlaschelli,
+    2012
+    
 \end{thebibliography}
 
 \end{document}
