@@ -67,7 +67,8 @@ Despite there are dozens of community detection algorithms already implemented t
 
 \section{Background}
 
-In this section, the dissertation introduces the background knowledge of network and community. In subsection 2.1, introduction to network structure, the basic terms used in both network analysis is firstly introduced. Secondly, in order to better understand the impact of data structures on community detection algorithms with respect to computational complexity, three of the most commonly used abstract data type for network data storage is also explained with examples. The next subsection, community, establishes the basic representation of community structure initially; afterwards, types of community are address accordingly.
+%% Rephrase this. 
+In this section, the dissertation introduces the background knowledge for this dissertation, that is, network and community. In subsection 2.1, introduction to network structure, the basic terms used in both network analysis is firstly introduced. Secondly, in order to better understand the impact of data structures on community detection algorithms with respect to computational complexity, three of the most commonly used abstract data type for network data storage is also explained with examples. The next subsection, community, establishes the basic representation of community structure initially; afterwards, types of community are address accordingly.
 
 \subsection{Network Structure}
 
@@ -145,9 +146,9 @@ By now, the dissertation introduces elements that composite a network and their 
 
 \subsection{Community}
 
-%% Re-write the remaining part of community section.
-%% Complete Strong/weak community definition
-%% Complete global structure community
+%% (Done)Re-write the remaining part of community section.
+%% (Done)Complete Strong/weak community definition
+%% (Done)Complete global structure community
 
 In network analysis, community in a network often refers to a group of vertex that has closer relation among each other comparing to other vertices that are not in the same group. For instance, take geographic network for instance with no additional information given, intuitively, let houses be vertices and distance between houses be edges, one may consider vertices that 'cluster' together is more likely to be a community. Of course, there is nothing wrong to determine the formation of community in this way. In fact, if one connect the houses based on the name of the owner, the shape and the scale of the community in the geographic network can be immensely different. Therefore, based on the nature of the network and the properties that researchers are interested in, there is no fix definition of community within network. 
 
@@ -213,34 +214,44 @@ Intuitively, to examine if a partition is 'good' or not, researchers should meas
 \item Sparsity: Communities should have weak relation mutually.
 \end{enumerate}
 
-In this section, a number of approaches will be introduced to evaluate the partition considering the properties mentioned above. Other additional properties such as betweeness, conductivity, and modularity are often take into consideration for better understanding of specific types of real-world network\cite{7,8}; some additional properties will also be explained in this section.
+In this section, a number of approaches will be introduced to evaluate the partition considering the properties mentioned above. Other additional properties such as betweeness, conductivity, and modularity are often take into consideration for better understanding of specific types of real-world network\cite{7,8}; some advanced properties will also be explained in this section.
 
 \subsection{Performance Evaluation}
 A good partition should have high tightness intra-community-wise and strong trait of sparsity inter-community-wise. Given a undirected partitioned network, a performance function $P(G)$ is defined as
-$$P(G) = \frac{\text{edge of intra-community} + \text{non-edge of inter-community}}{\text{total potential edges}}$$
-$$=\frac{|E_{intra}| + [n*(n-1) - |E_{intra}| - |E_{inter}|]}{n*(n-1)/2}$$
-$$=2*\left[ 1 - \frac{ |E_{inter}| } { n*\left( n-1 \right) }  \right],$$
+$$P(G) = \frac{\text{edge of intra-community} + \text{non-edge of inter-community}}{\text{total potential edges}}
+$$
+$$
+=\frac{|E_{intra}| + [n*(n-1) - |E_{intra}| - |E_{inter}|]}{n*(n-1)/2}
+$$
+\begin{equation}\label{eq:perf_eva3}
+=2*\left[ 1 - \frac{ |E_{inter}| } { n*\left( n-1 \right) }  \right],
+\end{equation}
 where G is a partitioned network, $E_{intra}$ is the set of edges lie within communities, $E_{inter}$ is the set of edges connecting vertices between two different communities. 
 
 \bigbreak
 
-After a series of rearrangement, it is not difficult to observe that a network has smaller set of inter-community edges can leads to higher value of $P(G)$(better performance)\cite{7}. In the aspect of algorithm complexity analysis, the time complexity of performance evaluation is in $O(E)$, where E is the edge set; with linear time complexity, researchers can conduct faster initial evaluation comparing to other advanced evaluation procedures.
+After a series of rearrangement, it is not difficult to observe that a network has smaller set of inter-community edges can leads to higher value of $P(G)$, which indicates better performance\cite{7}. In the aspect of algorithm complexity analysis, the time complexity of performance evaluation is in $O(E)$, where E is the edge set; with linear time complexity, researchers can conduct faster initial evaluation comparing to other advanced evaluation procedures. 
 
 \subsection{Mean Square Error}
 For networks with coordinates provided, take geographical network or cosmic network for instance \cite{9,10}, computing the mean square error(MSE) evaluation can give us an idea if a partition is good. A demonstration of geographical network is shown in figure \ref{fig:fig_3}. The quality function of MSE evaluation is defined as follows:
-    $$Q(G) = \sum_{i}^{k}\sum_{j}^{n} M_{i j} * |v_{j} - \bar{v}_{i}|^{2},$$
-where G is a partitioned network, k is the total number of communities in a partition, n is the count of the vertices of network $G$, $M$ is a k by n communities matrix, \[
-  M_{ij} = 
-  \begin{cases}
-    1, &  v_{j} \in C_i\\
-    0, & \text{otherwise}
-  \end{cases}
+\begin{equation}\label{MSE1}
+	Q(G) = \sum_{i}^{k}\sum_{j}^{n} M_{i j} * |v_{j} - \bar{v}_{i}|^{2},
+\end{equation}
+   
+where G is a partitioned network, k is the total number of communities in a partition, n is the count of the vertices of network $G$, $M$ is a k by n communities matrix, 
+\[
+      M_{ij} = 
+      \begin{cases}
+        1, &  v_{j} \in C_i\\
+        0, & \text{otherwise}
+      \end{cases}
 \]
+
 , and $\bar{v}_{i}$ is the arithmetic center of $C_i$. 
 
 \bigbreak
 
-This evaluation is relatively straightforward; if given a well-partitioned network, it is expected vertices within the same community cluster densely and surrounds the center of the community; such behavior results in mean square error within every community approaches to zero. The computation complexity of MSE evaluation is in $O(C*V)$, the computing time can be reduced by pre-allocating vertices into a collection of set distributed by the partition.
+This evaluation is relatively straightforward; given a well-partitioned network, it is expected that vertices within the same community cluster densely and surround the center of the community; such behavior results in mean square error within every community should be relatively small. What's more is that the idea computing the euclidean distance between vertices (or so called $l_2$ norms)  as part of community evaluation is not uncommon in network analysis. k-cluster is an algorithm partitioning network into clusters(communities); k-cluster first iterate through every vertices,  cluster the k amount of nearest neighbors into the same cluster by computing the distance between every other vertices and the chosen vertex, re-iterate the remaining vertices that are not clustered, and eventually stop the algorithm if there is no progress of partitioning. As for the aspect of computational expense, assume calculating the distance between vertices takes constant time, the computation complexity of MSE evaluation is in $O(C*V)$, where $C$ is the number of communities within network and $V$ is the vertex set of network, the computing time can be reduced by pre-allocating vertices into a collection of set distributed by the partition.
 
 \begin{figure}
 \centering
@@ -270,11 +281,49 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
 
 \subsection{Normalized Mutual Information}
 
-%% Read Community Structure - Section 6
-%% Work on NMI chapter intro
+%%(Done, but not related) Read Community Structure - Section 6
+%% (Done)Work on NMI chapter intro
 %% In Evaluation of Community Detection Methods, NMI is counter-intuitive and unreasonable due to lack of consideration of local community strucure
 %% Introduce new NMI indicator: adding the summation of v_partition/v_true as coefficients into orginal NMI model(Treat all communities equally to reduce size discrepancy)
 %% (Done)Read page 3 "Evaluation of Community Detection Methods"
+
+Despite previous approaches have proven their functionality in may applications, yet there is lack of consideration of 'real' partitions. A real partitions, or so called ground-truth labels, are networks that already have labels for evaluation. In this sub-section, the normalized mutual information(NMI) takes the ground-truth labels into partition evaluation. The idea of normalized mutual information in network analysis is derived from entropy computation in information theory. The original usage of NMI is similar to NMI is network analysis: a measure to determine the quality of cluster in matrix form\cite{23}. 
+
+The calculation of mutual information is identical to it in information theory. Given a discrete random variable $X$, the entropy of $X$ is defined as:
+
+\begin{equation}\label{eq:mi1}
+H(X) = - \sum_{x\in X} p(x)  log(p(x)),
+\end{equation}where $p(x)$ is the probability of x.
+\bigbreak
+By extending the context of  formula \ref{eq:mi1}, we can define the joint entropy of $X$ and another discrete random variable Y as:
+\begin{equation}\label{eq:mi2}
+H(X, Y) = - \sum_{x\in X} \sum_{y \in Y} p(x, y)  log(p(x, y)).
+\end{equation}
+\bigbreak
+Similarly,  the conditional entropy of X with given Y is as follows:
+\begin{equation}\label{eq:mi3}
+H(X|Y) = -\sum_{x \in X} p(x) H(x|y) = -\sum_{x \in X}\sum_{y \in Y} p(x,y) log(p(x|y)).
+\end{equation}
+With the above definitions of entropy, joint entropy, and conditional entropy, the mutual information can be finally defined as follows:
+
+\begin{equation}\label{eq:mi4}
+I(X;Y) = H(X) - H(X|Y)
+\end{equation}
+
+The intuition of mutual information is to calculate the measure of similarity between the partition provided by the procedure and the ground-truth partition. The visualization of the relation among types of entropy are shown in figure \ref{fig:fig_4}. By now, it is obvious that the purpose of mutual information measurement matches our intention to evaluate the partition considering ground-truth partition. However, since the value of mutual information of two sets can be any non-negative number, it is difficult to interpret the result solely be reading the value of it. Hence, a normalization of mutual information is necessary to improve the interpretability. Therefore, the NMI can be defined as follows:
+
+\begin{equation}\label{eq:nmi}
+NMI(X;Y) = \frac{2*I(X; Y)}{H(X;Y) + I(X;Y)}
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{fig_4.png}
+
+\caption{\label{fig:fig_4}The visualization of relation among joint entropy, conditional entropy, typical entropy, and mutual information.}
+\end{figure}
+%% Continue working on NMI, read the procedure of Evaluation of Community Detection Methods, Page 3, below equation 13
+
 
 \pagebreak
 \begin{thebibliography}{100}
@@ -390,6 +439,11 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
     {Null Models of Economic Networks: The Case of the World Trade Web}
     Giorgio Fagiolo · Tiziano Squartini · Diego Garlaschelli,
     2012
+    
+    \bibitem{23}
+    {On Normalized Mutual Information: Measure Derivations and Properties}
+    Tarald Kvalseth,
+    2017
     
 \end{thebibliography}
 
