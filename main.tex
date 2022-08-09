@@ -33,7 +33,7 @@
 
 
 
-\title{Evaluation of Community Detection Algorithms}
+\title{Evaluation of Community Detection Algorithm}
 \author{Ping-Chang Lee}
 \affil{MSc in Data Science \& Statistics \\ The University of Bath}
 \date{{September}{2022}}
@@ -167,7 +167,7 @@ In the research \cite{19}, Fortunatoa proposed that a module (community) should 
     Definition of Local Structure: By reading the name, it is not hard to tell that, given a sub-graph of the network that is under examination, the attention is focused on the local structure(sub-graph in this case). Indeed, such definition neglect the influence of the remaining portion other than the sub-graph itself. The local structure definition is mostly used in social network analysis \cite{17} and geographical network analysis \cite{18} since the mutual cohesion within community is often the focus of the studies. The basic evaluation of community is $d_i$, the total degree of the vertex $i$ in network $G$. Degree is the count of edges that connect the vertex to its neighbor vertices. Assume that the network is unweighted and undirected, in terms of adjacency matrix introduced in section 2.1, let $A$ be the adjacency matrix of network $G$, then $d_i = \sum_{j} A_{ij}$. The same expression can be expanded to sub-graph of network. Given a sub-graph, say, $G'$, then 
     
     \begin{equation}\label{eq:com_deg}
-    d_i(G') = \sum_{j \in V(G)} A_{ij} = \sum_{(j\in G')} A_{ij} + \sum_{(\notin G')} A_{ij} = d_i^{in}(G') + d_i^{out}(G').
+    d_i(G') = \sum_{j \in V(G)} A_{ij} = \sum_{(j\in G')} A_{ij} + \sum_{(j\notin G')} A_{ij} = d_i^{in}(G') + d_i^{out}(G').
     \end{equation}
     
     $d_i^{in}(G')$ is the sum of edges that connect vertex $i$ and all other vertices that are within sub-graph $G'$. $d_i^{out}(G')$ is the sum of edges that connect vertex i and all other vertices lies 'outside' of the sub-graph $G'$. 
@@ -205,6 +205,8 @@ In the research \cite{19}, Fortunatoa proposed that a module (community) should 
 
 
 Depending on the content of network, such as social network, chemical network, and ecosystem network, the definition of a community may vary. In fact, in numerous community detection algorithms, definitions of community are often byproducts of the algorithms to evaluate if the current partition requires further optimization \cite{19}. Additionally, if given a weighted network such as a geographical network, we can intuitively determine if vertices can be grouped into a community by taking their distance(weight of edges) into consideration. Directed network can also be partitioned into communities if the community detection is designed carefully with the help of linear algebra and information theory\cite{4}. As mentioned previously, there are networks that has no intention of creating communities such as random graphs or Barabási–Albert model\cite{5}; researchers can still apply community detection algorithms to unveil latent structure from these random graphs yet the interpretation of such results can be impractical.
+
+\pagebreak
 
 \section{Goodness of Partition}
 
@@ -283,11 +285,11 @@ Despite the time complexity of computing modularity is in $O(n*log n)$, which is
 
 %%(Done, but not related) Read Community Structure - Section 6
 %% (Done)Work on NMI chapter intro
-%% In Evaluation of Community Detection Methods, NMI is counter-intuitive and unreasonable due to lack of consideration of local community strucure
-%% Introduce new NMI indicator: adding the summation of v_partition/v_true as coefficients into orginal NMI model(Treat all communities equally to reduce size discrepancy)
+%% (Done)In Evaluation of Community Detection Methods, NMI is counter-intuitive and unreasonable due to lack of consideration of local community strucure
+%% (Done)Introduce new NMI indicator: adding the summation of v_partition/v_true as coefficients into orginal NMI model(Treat all communities equally to reduce size discrepancy)
 %% (Done)Read page 3 "Evaluation of Community Detection Methods"
 
-Despite previous approaches have proven their functionality in may applications, yet there is lack of consideration of 'real' partitions. A real partitions, or so called ground-truth labels, are networks that already have labels for evaluation. In this sub-section, the normalized mutual information(NMI) takes the ground-truth labels into partition evaluation. The idea of normalized mutual information in network analysis is derived from entropy computation in information theory. The original usage of NMI is similar to NMI is network analysis: a measure to determine the quality of cluster in matrix form\cite{23}. 
+Despite previous approaches have proven their functionality in may applications, yet there is lack of consideration of 'real' partitions. A real partitions, or so called ground-truth labels, are networks that already have labels for evaluation. In this sub-section, the normalized mutual information(NMI) takes the ground-truth labels into partition evaluation. The idea of normalized mutual information in network analysis is derived from entropy computation in information theory. The original usage of NMI is similar to NMI is information theory: a measurement to determine the quality of cluster\cite{23}. 
 
 The calculation of mutual information is identical to it in information theory. Given a discrete random variable $X$, the entropy of $X$ is defined as:
 
@@ -310,20 +312,34 @@ With the above definitions of entropy, joint entropy, and conditional entropy, t
 I(X;Y) = H(X) - H(X|Y)
 \end{equation}
 
-The intuition of mutual information is to calculate the measure of similarity between the partition provided by the procedure and the ground-truth partition. The visualization of the relation among types of entropy are shown in figure \ref{fig:fig_4}. By now, it is obvious that the purpose of mutual information measurement matches our intention to evaluate the partition considering ground-truth partition. However, since the value of mutual information of two sets can be any non-negative number, it is difficult to interpret the result solely be reading the value of it. Hence, a normalization of mutual information is necessary to improve the interpretability. Therefore, the NMI can be defined as follows:
+The intuition of mutual information is to calculate of similarity between the partition one would like to investigate and the ground-truth partition. The visualization of the relation among types of entropy are shown in figure \ref{fig:fig_4}. By now, it is obvious that the purpose of mutual information measurement matches our intention to evaluate the partition considering ground-truth partition. However, since the value of mutual information of two partitions can be any non-negative number, it is difficult to interpret the result solely be reading the value of it. Hence, a normalization of mutual information is necessary to improve the interpretability. Therefore, the NMI can be defined as follows:
 
 \begin{equation}\label{eq:nmi}
-NMI(X;Y) = \frac{2*I(X; Y)}{H(X;Y) + I(X;Y)}
+NMI(X;Y) = \frac{2*I(X; Y)}{H(X,Y) + I(X;Y)}.
 \end{equation}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.6\textwidth]{fig_4.png}
 
-\caption{\label{fig:fig_4}The visualization of relation among joint entropy, conditional entropy, typical entropy, and mutual information.}
+\caption{\label{fig:fig_4}The visualization of relation among joint entropy, conditional entropy, and mutual information.}
 \end{figure}
-%% Continue working on NMI, read the procedure of Evaluation of Community Detection Methods, Page 3, below equation 13
+%% (Done)Continue working on NMI, read the procedure of Evaluation of Community Detection Methods, Page 3, below equation 13
+By normalizing mutual information, NMI is bounded between 0 (no correlation) and 1 (perfect correlation) inclusively, which helps researchers to interpret the result. However, due to the nature of normalized mutual information, the calculation of entropy requires approximation of  probability between ground-truth label and partition; the approximation of probability is often done by calculating the frequency, this leads to finite size effect\cite{10}. A finite size effect is that the interest of research is not independent to the size of the model, which can be disadvantageous when analysis needs to be done under size-independent circumstances.
 
+\bigbreak
+
+Moreover, despite normalized mutual information is able to notice the importance of small communities to a certain degree unlike the evaluation by modularity discussed in the previous sub-section, the normalized mutual information may sometimes leads to counter-intuitive result. For instance, say, a network with provided ground-truth labels, (1, 1, 1, 1, 1, 2, 2, 2, 3, 3), the order of labels is determined by the ID of vertices. [Note that the order is irrelevant to the calculation of NMI due to the nature of this evaluation method.] Given two partitions, A = (1, 1, 1, 1, 2, 2, 2, 2, 3, 3) and B = (1, 1, 1, 1, 1, 2, 2, 2, 2, 3), by visually comparing two partitions, one can intuitively conclude that partition A has higher similarity to the ground-truth label than partition B does since in partition A, community of label 3 is preserved and only a small portion of community with label 1 are effected . Nonetheless, the normalized mutual information of partition A and partition B is 0.77 and 0.81, indicating that partition B has better correlation to the ground-truth label than partition A does, which is counter-intuitive.
+
+\bigbreak
+
+The time complexity of normalized mutual information is in $O(n^2)$, where $n$ is the number of vertices in the network. The quadratic time complexity can be problematic and time consuming if applied on large complex network. Since NMI focuses on the distribution of cluster instead of the structure between edges and vertices, NMI outperforms other evaluation methods if $E(G) >>V(G)$
+, where E(G) is the edge set of network G and V(G) is the vertex set of network G.
+
+\subsection{Adaptive Mutual Information}
+%%Patches to NMI to encourage the completeness of community no matter the size of the community.
+
+%% Discuss the properties of the scale_check function and how the function performs in different sizes
 
 \pagebreak
 \begin{thebibliography}{100}
